@@ -1,4 +1,5 @@
-# CryptoBot
+# CryptoBot MarMot
+source: https://x.com/Web3Marmot/status/1884325392737251598
 todo;
 - finish analyzing initial code (line 98-)
 - try to run the code
