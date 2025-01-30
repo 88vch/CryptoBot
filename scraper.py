@@ -7,6 +7,11 @@ import time
 # DexScreener API endpoint
 DEXSCREENER_API_URL = "https://api.dexscreener.com/latest/dex/tokens/"
  
+# Function to fetch all newly created tokens within the last (X) hrs
+# TODO: use DEXScreener API [https://docs.dexscreener.com/api/reference]
+def fetch_new_tokens(hours: int) -> list:
+    return []
+
 # Function to fetch token data (= trades) from DexScreener
 def fetch_token_data(token_address):
     try:
@@ -95,6 +100,7 @@ def fetch_token_contract_analysis(token_address):
         return None
  
 # Function to parse contract analysis and check safety
+# VALIDITY CHECK (this function should confirm whether the token is safe or not)(scam or legit project)
 def parse_contract_analysis(html_content):
     soup = BeautifulSoup(html_content, "html.parser")
     analysis_data = {}
@@ -134,6 +140,13 @@ def save_to_csv(data, filename="final_token_analysis.csv"):
  
 # Main function to run the combined analysis
 def main():
+    # We will then run this function ever [X] hours to get an updated list of tokens
+    # - i.e. 6 times a day (every 4 hours)
+    # while True:
+    hours = 4
+
+    # TODO: grab a list of tokens created within the last [X] hours (4)
+    token_address = fetch_new_tokens(hours)
     # List of token addresses to analyze (replace with actual token addresses)
     token_addresses = [
         '0xYourTokenAddress1',
@@ -149,17 +162,20 @@ def main():
         if not token_data:
             continue
  
+        # Step 1a: find all instances of the token (need to find the legit one)
         filtered_tokens = filter_tokens_dexscreener(token_data['pairs'])
         if not filtered_tokens:
             print(f"No tokens matched DexScreener criteria for {token_address}.")
             continue
  
         # Step 2: Analyze social activity on tweetscout.io
-        token_name = filtered_tokens[0]['token_name']  # Use the first filtered token
+        # - Use the first filtered token (TODO: assumed to be the legit one)
+        token_name = filtered_tokens[0]['token_name']  
         html_content = fetch_token_social_activity(token_name)
         if not html_content:
             continue
  
+        # Step 2a: Parse [twitter] content and (in this case) filter influencers
         influencers = parse_social_activity(html_content)
         if not influencers:
             print(f"No influencers found for {token_name}.")
@@ -197,6 +213,8 @@ def main():
         save_to_csv(final_results)
     else:
         print("No tokens matched all criteria.")
+
+        # time.sleep(14400) # 4 hours = 14400 seconds
  
 if __name__ == "__main__":
     main()
