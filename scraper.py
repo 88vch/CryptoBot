@@ -6,11 +6,27 @@ import time
  
 # DexScreener API endpoint
 DEXSCREENER_API_URL = "https://api.dexscreener.com/latest/dex/tokens/"
- 
+
+# TODO - p much format the token in the proper response form (seen in dexscreener docs)
+def print_token(token):
+    pass
+
+def print_tokens(data):
+    for token in data:
+        print_token(token)
+
 # Function to fetch all newly created tokens within the last (X) hrs
 # TODO: use DEXScreener API [https://docs.dexscreener.com/api/reference]
 def fetch_new_tokens(hours: int) -> list:
-    return []
+    response = requests.get(
+        "https://api.dexscreener.com/token-profiles/latest/v1",
+        headers={},
+    )
+    data = response.json()
+
+    print_tokens(data)
+
+    return data
 
 # Function to fetch token data (= trades) from DexScreener
 def fetch_token_data(token_address):
@@ -138,6 +154,12 @@ def save_to_csv(data, filename="final_token_analysis.csv"):
     df.to_csv(filename, index=False)
     print(f"Data saved to {filename}")
  
+def test():
+    hours = 4
+    token_address = fetch_new_tokens(hours)
+
+    print("done getting token_addrs (expected print)")
+
 # Main function to run the combined analysis
 def main():
     # We will then run this function ever [X] hours to get an updated list of tokens
@@ -217,4 +239,5 @@ def main():
         # time.sleep(14400) # 4 hours = 14400 seconds
  
 if __name__ == "__main__":
-    main()
+    # main()
+    test()

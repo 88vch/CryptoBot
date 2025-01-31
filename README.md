@@ -3,6 +3,7 @@ source (op): https://x.com/Web3Marmot/status/1883960123334484279
 
 source (op code): https://pastebin.com/uyvFEQHU
 
+to activate venv: source CryptoBot/bin/activate
 
 <br><hr>
 todo;
