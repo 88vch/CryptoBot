@@ -3,13 +3,38 @@ from bs4 import BeautifulSoup
 import pandas as pd
 from datetime import datetime, timedelta
 import time
+import json
  
 # DexScreener API endpoint
 DEXSCREENER_API_URL = "https://api.dexscreener.com/latest/dex/tokens/"
 
+def print_link(link):
+    if "type" in link:
+        print("type: " + link["type"])
+    if "label" in link:
+        print("label: " + link["label"])
+    if "url" in link:
+        print("url: " + link["url"])
+
 # TODO - p much format the token in the proper response form (seen in dexscreener docs)
 def print_token(token):
-    pass
+    if "url" in token:
+        print("url: " + token["url"])
+    if "chainId" in token:
+        print("chainId: " + token["chainId"])
+    if "tokenAddress" in token:
+        print("tokenAddress: " + token["tokenAddress"])
+    if "icon" in token:
+        print("icon: " + token["icon"])
+    if "header" in token:
+        print("header: " + token["header"])
+    if "description" in token:
+        print("description: " + token["description"])
+
+    if "links" in token:
+        for link in token["links"]:
+            print_link(link)
+
 
 def print_tokens(data):
     for token in data:
@@ -24,7 +49,10 @@ def fetch_new_tokens(hours: int) -> list:
     )
     data = response.json()
 
-    print_tokens(data)
+    with open("res/token_data.json", "w") as json_file:
+        json.dump(data, json_file, indent=4)
+
+    # print_tokens(data)
 
     return data
 
@@ -153,7 +181,8 @@ def save_to_csv(data, filename="final_token_analysis.csv"):
     df = pd.DataFrame(data)
     df.to_csv(filename, index=False)
     print(f"Data saved to {filename}")
- 
+
+# Test function to test functions
 def test():
     hours = 4
     token_address = fetch_new_tokens(hours)
