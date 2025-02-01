@@ -43,8 +43,15 @@ def print_tokens(data):
 # Function to fetch all newly created tokens within the last (X) hrs
 # TODO: use DEXScreener API [https://docs.dexscreener.com/api/reference]
 def fetch_new_tokens(hours: int) -> list:
+    # Get the latest tokens created (literal new tokens by the seconds updated real time)
+    # response = requests.get(
+    #     "https://api.dexscreener.com/token-profiles/latest/v1",
+    #     headers={},
+    # )
+
+
     response = requests.get(
-        "https://api.dexscreener.com/token-profiles/latest/v1",
+        "https://api.dexscreener.com/token-boosts/latest/v1",
         headers={},
     )
     data = response.json()
